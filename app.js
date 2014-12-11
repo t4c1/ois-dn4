@@ -5,6 +5,8 @@ var queryUrl = baseUrl + '/query';
 var username = "ois.seminar";
 var password = "ois4fri";
 
+var userEHRId="";
+
 function getSessionId() {
     var response = $.ajax({
         type: "POST",
@@ -50,6 +52,7 @@ function kreirajEHRzaBolnika() {
 		                    $("#kreirajSporocilo").html("<span class='obvestilo label label-success fade-in'>Uspešno kreiran EHR '" + ehrId + "'.</span>");
 		                    console.log("Uspešno kreiran EHR '" + ehrId + "'.");
 		                    $("#preberiEHRid").val(ehrId);
+		                	userEHRId=ehrId;
 		                }
 		            },
 		            error: function(err) {
@@ -69,7 +72,13 @@ function preberiEHRodBolnika() {
 	var ehrId = $("#preberiEHRid").val();
 
 	if (!ehrId || ehrId.trim().length == 0) {
-		$("#preberiSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevan podatek!");
+		alert(userEHRId);
+		if(!userEHRId || userEHRId.trim().length == 0){
+			ehrId=userEHRId;
+		}
+		else{
+			$("#preberiSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevan podatek!");
+		}
 	} else {
 		$.ajax({
 			url: baseUrl + "/demographics/ehr/" + ehrId + "/party",
@@ -93,7 +102,7 @@ function dodajMeritveVitalnihZnakov() {
 	sessionId = getSessionId();
 
 	var ehrId = $("#dodajVitalnoEHR").val();
-	var datumInUra = $("#dodajVitalnoDatumInUra").val();
+	var datumInUra = $("#dodajVitalnoDatumInUra").val(); //default je zdaj!
 	var telesnaVisina = $("#dodajVitalnoTelesnaVisina").val();
 	var telesnaTeza = $("#dodajVitalnoTelesnaTeza").val();
 	var telesnaTemperatura = $("#dodajVitalnoTelesnaTemperatura").val();
@@ -103,7 +112,12 @@ function dodajMeritveVitalnihZnakov() {
 	var merilec = $("#dodajVitalnoMerilec").val();
 
 	if (!ehrId || ehrId.trim().length == 0) {
-		$("#dodajMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevane podatke!</span>");
+		if(!userEHRId || userEHRId.trim().length == 0){
+			ehrId=userEHRId;
+		}
+		else{
+			$("#preberiSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevan podatek!");
+		}
 	} else {
 		$.ajaxSetup({
 		    headers: {"Ehr-Session": sessionId}
@@ -151,9 +165,18 @@ function preberiMeritveVitalnihZnakov() {
 	var ehrId = $("#meritveVitalnihZnakovEHRid").val();
 	var tip = $("#preberiTipZaVitalneZnake").val();
 
-	if (!ehrId || ehrId.trim().length == 0 || !tip || tip.trim().length == 0) {
+	if (!ehrId || ehrId.trim().length == 0){
+		if(!userEHRId || userEHRId.trim().length == 0){
+			ehrId=userEHRId;
+		}
+		else{
+			$("#preberiSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevan podatek!");
+		}
+	}
+	else if( !tip || tip.trim().length == 0) {
 		$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevan podatek!");
-	} else {
+	}
+	else {
 		$.ajax({
 			url: baseUrl + "/demographics/ehr/" + ehrId + "/party",
 	    	type: 'GET',
