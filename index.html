@@ -7,6 +7,9 @@
 	    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
 	    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
 	    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.15-beta/nv.d3.css" rel="stylesheet" type="text/css">
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.15-beta/nv.d3.js"></script>
 	    <script src="app.js"></script>
 	    <style>
 	  		body {padding: 10px;}
@@ -31,6 +34,7 @@
 						<span class="label label-default">Priimek</span><input id="kreirajPriimek" type="text" class="form-control" placeholder="Bin Laden">
 						<span class="label label-default">Datum rojstva</span><input id="kreirajDatumRojstva" type="text" class="form-control" placeholder="1957-03-10T09:08">
 						<button type="button" class="btn btn-primary btn-xs" onclick="kreirajEHRzaBolnika()">Dodaj osnovne podatke o bolniku</button><span id="kreirajSporocilo"></span>
+						<button type="button" class="btn btn-primary btn-xs" onclick="kreirajDemo()">Kreriraj demo</button><span id="kreirajSporocilo"></span>
 				  	</div>
 				</div>
 			</div>
@@ -85,10 +89,12 @@
 					<div class="panel-body">
 						<span class="label label-default">EHR ID</span><input id="meritveVitalnihZnakovEHRid" type="text" class="form-control input-mini" placeholder="7b661e12-3a98-21ad-c29e-2dc9f5a3d885">
 						<button type="button" class="btn btn-primary btn-xs" onclick="preberiMeritveVitalnihZnakov('telesna temperatura')">Preberi meritve vitalnih znakov</button><span id="preberiMeritveVitalnihZnakovSporocilo"></span>
-						<div id="rezultatMeritveVitalnihZnakov"></div>
 				  	</div>
 				</div>			
 			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-1 col-md-1 col-sm-1"></div>
 			<div class="col-lg-5 col-md-5 col-sm-5">
 				<div class="panel panel-default">
 					<div class="panel-heading">
@@ -103,8 +109,25 @@
 							</select></div>
 						</div>
 					</div>
+					<div id="rezultatMeritveVitalnihZnakov"></div>
+				</div>
+			</div>
+			<div class="col-lg-5 col-md-5 col-sm-5">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-lg-8 col-md-8 col-sm-8"><b>Grafični Prikaz</b> meritev <b>vitalnih znakov</b> bolnika</div>
+							<div class="col-lg-4 col-md-4 col-sm-4"><select class="form-control input-sm" id="lastnost">
+								<option value="Pujsa,Pepa,1938-10-30T14:58">Krvni tlak</option>
+								<option value="Pujsa,Pepa,1938-10-30T14:58">Telesna višina</option>
+								<option value="Pujsa,Pepa,1938-10-30T14:58">Telesna teža</option>
+								<option value="Pujsa,Pepa,1938-10-30T14:58">Nasičenost krvi s kisikom</option>
+								<option value="Pujsa,Pepa,1938-10-30T14:58">Telesna temperatura</option>
+							</select></div>
+						</div>
+					</div>
 					<div class="panel-body">
-						<div class="graf"></div>
+						<svg style='height:600px'/>
 				  	</div>
 				</div>
 			</div>
