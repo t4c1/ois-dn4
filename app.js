@@ -18,7 +18,7 @@ function parseNormalData(){
 	    success: function (text) {
 	    		data = d3.tsv.parse(text);
 	    		for(var line in data){
-	    			alert(line);
+	    			alert("".join(line));
 	    		}
 	       	/*var lines=text.split("\n");
 	       	for(var line in lines){
