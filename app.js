@@ -9,6 +9,32 @@ var password = "ois4fri";
 var userEHRId="";
 var demoIDs=["4511d2cb-7b31-474c-a82d-acfdedc302ca","",""];
 
+var data;
+
+function parseNormalData(){
+	$.ajax({
+	    url: "signs.tsv",
+	    type: 'GET',
+	    success: function (text) {
+	    		data = d3.tsv.parse(text);
+	    		for(var line in data){
+	    			alert(line);
+	    		}
+	       	/*var lines=text.split("\n");
+	       	for(var line in lines){
+	       		line.split("\t");
+	       		for(var vals in line){
+	       			
+	       		}
+	       	}*/
+	    },
+	    error: function(err){
+	    	alert("error",err);
+	    }
+	});
+}
+
+
 function graf(){
 	nv.addGraph(function() {
 	  var chart = nv.models.scatterChart()
@@ -410,6 +436,7 @@ function AQLquerry(ehrId){
 
 
 $(document).ready(function() {
+	parseNormalData();
 	$('#preberiObstojeciEHR').change(function() {
 		$("#preberiSporocilo").html("");
 		$("#preberiEHRid").val($(this).val());
