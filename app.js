@@ -7,7 +7,7 @@ var username = "ois.seminar";
 var password = "ois4fri";
 
 var userEHRId="";
-var demoIDs=['caee30ed-cde4-465e-9c32-9b976f7b50cf', '50e241d0-a216-41d3-8b42-234369e011c6', 'e574711d-fae7-4460-9e4a-fd9f02708ffe'];
+var demoIDs=['a3374a01-c266-4ccf-b78f-d6912362652a', '6cc0c900-28de-4495-aceb-a80b4edca0da', 'ae8d2b33-b941-492c-8d84-19643e4390bd'];
 
 var data= {"age":	[0,1,3,6,13],//od katerega leta naprej
 "respiration":		[[40,60],[25,50],[20,30],[20,30],[12,30]],
@@ -29,17 +29,20 @@ function graf(){
 	
 	  //Configure how the tooltip looks.
 	  chart.tooltipContent(function(key) {
-	      return '<h3>' + key + '</h3>';
+	      return '<h4>' + key + '</h4>';
 	  });
 	
 	  //Axis settings
-	  chart.xAxis.tickFormat(d3.format('.02f'));
+	  chart.xAxis
+		.tickFormat(function (d) {
+			return d3.time.format('%d.%m.%Y')(new Date(d));
+		})
+		//.tickFormat(d3.format('.02f'));
 	  chart.yAxis.tickFormat(d3.format('.02f'));
 	
 	  //We want to show shapes other than circles.
 	  chart.scatter.onlyCircles(false);
-	
-	  var myData = randomData(4,40);
+	  
 	  d3.select('svg')
 	      .datum([])
 	      .call(chart);
@@ -49,34 +52,6 @@ function graf(){
 	  return chart;
 	});
 }
-
-/**************************************
- * Simple test data generator
- */
-function randomData(groups, points) { //# groups,# points per group
-  var data = [],
-      shapes = ['circle', 'cross', 'triangle-up', 'triangle-down', 'diamond', 'square'],
-      random = d3.random.normal();
-
-  for (i = 0; i < groups; i++) {
-    data.push({
-      key: 'Group ' + i,
-      values: []
-    });
-
-    for (j = 0; j < points; j++) {
-      data[i].values.push({
-        x: random()
-      , y: random()
-      , size: Math.random()   //Configure the size of each scatter point
-      , shape: (Math.random() > 0.95) ? shapes[j % 6] : "circle"  //Configure the shape of each scatter point.
-      });
-    }
-  }
-
-  return data;
-}
-
 
 function getSessionId() {
     var response = $.ajax({
@@ -255,9 +230,9 @@ function kreirajDemo1(){
 		datumInUra.setFullYear(1975);
 		for(var i =0;i<100;i++){
 			var mesec=datumInUra.getMonth();
-			if (mesec==11){
+			/*if (mesec==11){
 				datumInUra.setYear(1+datumInUra.getYear());
-			}
+			}*/
 			datumInUra.setMonth(mesec+1);
 			var telesnaVisina = 110+Math.pow(i,0.5);
 			var telesnaTeza = 50 + i/3 + Math.random();
@@ -285,15 +260,15 @@ function kreirajDemo2(){
 		datumInUra.setFullYear(1990);
 		for(var i =0;i<100;i++){
 			var mesec=datumInUra.getMonth();
-			if (mesec==11){
+			/*if (mesec==11){
 				datumInUra.setYear(1+datumInUra.getYear());
-			}
+			}*/
 			datumInUra.setMonth(mesec+1);
 			var telesnaVisina = 170;
-			var telesnaTeza = 81 +Math.sin(i/10)+ Math.random();
+			var telesnaTeza = 81 +Math.sin(i/100)+ Math.random();
 			var telesnaTemperatura = 35.2 + Math.random()*1.8;
 			var sistolicniKrvniTlak = 130 + 30*Math.random();
-			var diastolicniKrvniTlak = 60 + 30*Math.random();
+			var diastolicniKrvniTlak = 65 + 35*Math.random();
 			var nasicenostKrviSKisikom = 95 + 5*Math.random();
 			var merilec = "Medicinska sestra";
 			var pulz=60 +30*Math.random();
@@ -315,9 +290,9 @@ function kreirajDemo3(){
 		datumInUra.setFullYear(1995);
 		for(var i =0;i<100;i++){
 			var mesec=datumInUra.getMonth();
-			if (mesec==11){
+			/*if (mesec==11){
 				datumInUra.setYear(1+datumInUra.getYear());
-			}
+			}*/
 			datumInUra.setMonth(mesec+1);
 			var telesnaVisina = 170+Math.random();
 			var telesnaTeza = 81 +Math.sin(i/20)+ Math.random();
@@ -345,7 +320,7 @@ function kreirajDemo(){
 	kreirajDemo3();
 }
 
-
+var results;
 function preberiMeritveVitalnihZnakov() {
 	sessionId = getSessionId();	
 
@@ -371,19 +346,35 @@ function preberiMeritveVitalnihZnakov() {
 		headers: {"Ehr-Session": sessionId},
 		success: function (res) {
 			var party = res.party;
-			$("#rezultatMeritveVitalnihZnakov").html("<br/><span>Pridobivanje podatkov za <b>'" + tip + "'</b> bolnika <b>'" + party.firstNames + " " + party.lastNames + "'</b>.</span><br/><br/>");
+			var ime={
+			"temperature":"Telesna temperatura [°C]",
+			"respiration":"Hitrost dihanja [vdihov na minuto]",
+			"systolic":"Sistolični krvni pritisk [mm Hg]",
+			"diastolic":"Diastolični krvni pritisk [mm Hg]",
+			"pulse":"Srčni utrip [na min]",
+			"height": "Telesna višina[cm]",
+			"weight": "Telesna teža [kg]",
+			}
+			//$("#rezultatMeritveVitalnihZnakov").html("<br/><span>Pridobivanje podatkov za <b>'" + ime[tip] + "'</b> bolnika <b>'" + party.firstNames + " " + party.lastNames + "'</b>.</span><br/><br/>");
 			myGraphData=[];
 			var age=(new Date().getTime() - new Date(party.dateOfBirth.split("T")[0]).getTime())/1000/60/60/24/356
-			var i;
+			console.log(new Date());
+			console.log(new Date(party.dateOfBirth.split("T")[0]));
+			console.log("age "+age);
+			var i,j;
 			for (i in data["age"]){
-				if(age>i){
+				if(age<=i){
 					break;
 				}
+				else{
+					j=i;
+				}
 			}
+			console.log("age group "+j);
 			var a,b,c,d;
 			if(tip in data){
-				b=data[tip][i][0];
-				c=data[tip][i][1];
+				b=data[tip][j][0];
+				c=data[tip][j][1];
 				console.log(b);
 				console.log(c);
 			}
@@ -422,11 +413,13 @@ function preberiMeritveVitalnihZnakov() {
 				a=b-dif;
 				d=c+dif;
 			}
-			AQLquerry(ehrId,tip,0,a,"kritično nizka vrednost");
+			$("#rezultatMeritveVitalnihZnakov").html("");
+			results="<table class='table table-striped table-hover'><tr><th>Datum in ura</th><th class='text-right'>"+ ime[tip] +"</th></tr>";
+			AQLquerry(ehrId,tip,0,a,"nevarno nizka vrednost");
 			AQLquerry(ehrId,tip,a,b,"neobičajno nizka vrednost");
 			AQLquerry(ehrId,tip,b,c,"normalna vrednost");
 			AQLquerry(ehrId,tip,c,d,"neobičajno visoka vrednost");
-			AQLquerry(ehrId,tip,d,10000,"kritično visoka vrednost");
+			AQLquerry(ehrId,tip,d,10000,"nevarno visoka vrednost");
 		},
 		error: function(err) {
 			$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
@@ -466,33 +459,33 @@ function AQLquerry(ehrId,podatek,min,max,ime){
 		  values: []
 			}
 			if (res){
-				var results = "<table class='table table-striped table-hover'><tr><th>Datum in ura</th><th class='text-right'>Telesna temperatura</th></tr>";
 				var rows = res.resultSet;
 				for (var i in rows) {
 					if(i<15){
-						results += "<tr><td>" + rows[i].cas + "</td><td class='text-right'>" + rows[i].vrednost + " "  + "</td>";
+						results += "<tr><td>" + rows[i].cas + "</td><td class='text-right'>" + rows[i].vrednost + " "  + "</td></tr>";
 					}
 					group.values.push({
-						x:new Date(rows[i].cas.split("T")[0]).getTime()/1000000000,
+						x:new Date(rows[i].cas.split("T")[0]).getTime(),
 						y:rows[i].vrednost,
 						size: 1,
 						shape: "circle"
 						});
 				}
-				results += "</table>";
-				$("#rezultatMeritveVitalnihZnakov").append(results);
 			}
 			myGraphData.push(group);
 			if(myGraphData.length==5){
+					$("#rezultatMeritveVitalnihZnakov").append(results+"</table>");
 					var podatki=false
-					for(var i in myGraphData){
+					for(var i=0;i<myGraphData.length;i++){
 						if(myGraphData[i].values.length!=0){
 							podatki=true;
 						}
+						else{
+							myGraphData.splice(i, 1);
+							i--;
+						}
 					}
 					if(podatki){
-						console.log(myGraphData[0].values);
-						console.log(randomData(4,40)[0].values);
 						d3.select('svg')
 						  .datum(myGraphData)
 						  .call(chart);
@@ -515,7 +508,7 @@ function AQLquerry(ehrId,podatek,min,max,ime){
 $(document).ready(function() {
 	$('#preberiObstojeciEHR').change(function() {
 		$("#preberiSporocilo").html("");
-		$("#preberiEHRid").val($(this).val());
+		$("#preberiEHRid").val(demoIDs[parseInt($(this).val())]);
 	});
 	$('#preberiPredlogoBolnika').change(function() {
 		$("#kreirajSporocilo").html("");
