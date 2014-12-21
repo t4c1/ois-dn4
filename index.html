@@ -25,15 +25,14 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<div class="row">
-							<div class="col-lg-8 col-md-8 col-sm-8"><b>Kreiraj EHR zapis</b> za novega bolnika</div>
-							<!--<div class="col-lg-4 col-md-4 col-sm-4"><select class="form-control input-sm" id="preberiPredlogoBolnika"><option value=""></option><option value="Pujsa,Pepa,1938-10-30T14:58">Pujsa Pepa</option></select></div>1-->
+							<div class="col-lg-8 col-md-8 col-sm-8"><b>Kreiraj</b> nov<b> EHR zapis</b></div>
 						</div>
 					</div>
 					<div class="panel-body">
 						<span class="label label-default">Ime</span><input id="kreirajIme" type="text" class="form-control input-mini" placeholder="Osama">
 						<span class="label label-default">Priimek</span><input id="kreirajPriimek" type="text" class="form-control" placeholder="Bin Laden">
 						<span class="label label-default">Datum rojstva</span><input id="kreirajDatumRojstva" type="text" class="form-control" placeholder="1957-03-10T09:08">
-						<button type="button" class="btn btn-primary btn-xs" onclick="kreirajEHRzaBolnika()">Dodaj osnovne podatke o bolniku</button><!--<span id="kreirajSporocilo"></span>!-->
+						<button type="button" class="btn btn-primary btn-xs" onclick="kreirajEHRzaBolnika()">Dodaj osnovne podatke</button>
 						<button type="button" class="btn btn-primary btn-xs" onclick="kreirajDemo()">Kreriraj demo</button><span id="kreirajSporocilo"></span>
 				  	</div>
 				</div>
@@ -42,7 +41,7 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<div class="row">
-							<div class="col-lg-8 col-md-8 col-sm-8"><b>Preberi EHR zapis</b> obstoječega bolnika</div>
+							<div class="col-lg-8 col-md-8 col-sm-8"><b>Preberi</b> obstoječ <b> EHR zapis</b></div>
 							<div class="col-lg-4 col-md-4 col-sm-4">
 								<select class="form-control input-sm" id="preberiObstojeciEHR">
 									<option value=""></option>
@@ -55,7 +54,7 @@
 					</div>
 					<div class="panel-body">
 						<span class="label label-default">EHR ID</span><input id="preberiEHRid" type="text" class="form-control input-mini" placeholder="7b661e12-3a98-21ad-c29e-2dc9f5a3d885    (prazno = zadnji uporabljeni)">
-						<button type="button" class="btn btn-primary btn-xs" onclick="preberiEHRodBolnika()">Preberi osnovne podatke o bolniku</button><span id="preberiSporocilo"></span>
+						<button type="button" class="btn btn-primary btn-xs" onclick="preberiEHRodBolnika()">Preberi osnovne podatke</button><span id="preberiSporocilo"></span>
 				  	</div>
 				</div>
 			</div>
@@ -66,7 +65,7 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<div class="row">
-							<div class="col-lg-8 col-md-8 col-sm-8"><b>Vnos</b> meritve <b>vitalnih znakov</b> bolnika</div>
+							<div class="col-lg-8 col-md-8 col-sm-8"><b>Vnos</b> meritve <b>vitalnih znakov</b></div>
 							<div class="col-lg-4 col-md-4 col-sm-4">
 								<select class="form-control input-sm" id="preberiObstojeciVitalniZnak">
 									<option value=""></option>
@@ -97,7 +96,7 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<div class="row">
-							<div class="col-lg-6 col-md-6 col-sm-6"></div>
+							<div class="col-lg-6 col-md-6 col-sm-6"><b>Poizvedovanje</b> po podatkih o <b>vitalnih znakih</b></div>
 							<div class="col-lg-3 col-md-3 col-sm-3">
 								<select class="form-control input-sm" id="preberiTipZaVitalneZnake">
 									<option value="systolic">Sistolični krvni tlak</option>
@@ -121,7 +120,10 @@
 					</div>				
 					<div class="panel-body">
 						<span class="label label-default">EHR ID</span><input id="meritveVitalnihZnakovEHRid" type="text" class="form-control input-mini" placeholder="7b661e12-3a98-21ad-c29e-2dc9f5a3d885    (prazno = zadnji uporabljeni)">
-						<button type="button" class="btn btn-primary btn-xs" onclick="preberiMeritveVitalnihZnakov('telesna temperatura')">Preberi meritve vitalnih znakov</button><span id="preberiMeritveVitalnihZnakovSporocilo"></span>
+						<button type="button" class="btn btn-primary btn-xs" onclick="preberiMeritveVitalnihZnakov('telesna temperatura')">Preberi meritve vitalnih znakov</button>
+						<button type="button" class="btn btn-primary btn-xs" onclick="prikaziObdobja()">Prikaži obdobja</button>
+						<span id="preberiMeritveVitalnihZnakovSporocilo"></span>
+						<div id="obdobja"></div>
 				  	</div>
 				</div>			
 			</div>
@@ -132,14 +134,7 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<div class="row">
-							<div class="col-lg-8 col-md-8 col-sm-8"><b>Tekstovni Prikaz</b> meritev <b>vitalnih znakov</b> bolnika</div>
-							<!--<div class="col-lg-4 col-md-4 col-sm-4"><select class="form-control input-sm" id="lastnost">
-								<option value="Pujsa,Pepa,1938-10-30T14:58">Krvni tlak</option>
-								<option value="Pujsa,Pepa,1938-10-30T14:58">Telesna višina</option>
-								<option value="Pujsa,Pepa,1938-10-30T14:58">Telesna teža</option>
-								<option value="Pujsa,Pepa,1938-10-30T14:58">Nasičenost krvi s kisikom</option>
-								<option value="Pujsa,Pepa,1938-10-30T14:58">Telesna temperatura</option>
-							</select></div> !-->
+							<div class="col-lg-8 col-md-8 col-sm-8"><b>Tekstovni Prikaz</b> meritev <b>vitalnih znakov</b></div>
 						</div>
 					</div>
 					<div id="rezultatMeritveVitalnihZnakov"></div>
@@ -149,14 +144,7 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<div class="row">
-							<div class="col-lg-8 col-md-8 col-sm-8"><b>Grafični Prikaz</b> meritev <b>vitalnih znakov</b> bolnika</div>
-							<!--<div class="col-lg-4 col-md-4 col-sm-4"><select class="form-control input-sm" id="lastnost">
-								<option value="Pujsa,Pepa,1938-10-30T14:58">Krvni tlak</option>
-								<option value="Pujsa,Pepa,1938-10-30T14:58">Telesna višina</option>
-								<option value="Pujsa,Pepa,1938-10-30T14:58">Telesna teža</option>
-								<option value="Pujsa,Pepa,1938-10-30T14:58">Nasičenost krvi s kisikom</option>
-								<option value="Pujsa,Pepa,1938-10-30T14:58">Telesna temperatura</option>
-							</select></div> !-->
+							<div class="col-lg-8 col-md-8 col-sm-8"><b>Grafični Prikaz</b> meritev <b>vitalnih znakov</b></div>
 						</div>
 					</div>
 					<div class="panel-body">
